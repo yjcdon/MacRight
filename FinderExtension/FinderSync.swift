@@ -51,7 +51,7 @@ private struct SynchronousMenuResult: @unchecked Sendable {
 private final class FinderMenuController: NSObject {
     private let volumeMonitor: VolumeMonitor
     private let accessStore = DirectoryAccessStore()
-    private var isCreatingFile = false
+    private var isPerformingDirectoryAction = false
 
     init(volumeMonitor: VolumeMonitor) {
         self.volumeMonitor = volumeMonitor
@@ -72,9 +72,12 @@ private final class FinderMenuController: NSObject {
         ) else { return nil }
 
         let menu = NSMenu()
+        menu.autoenablesItems = false
         menu.addItem(item("Copy Path", symbol: "doc.on.clipboard", action: .copy, context: context))
         if context.directoryURL != nil {
-            menu.addItem(item("Open in Terminal", symbol: "terminal", action: .terminal, context: context))
+            let terminal = item("Open in Terminal", symbol: "terminal", action: .terminal, context: context)
+            terminal.isEnabled = !isPerformingDirectoryAction
+            menu.addItem(terminal)
             let newFile = NSMenuItem(
                 title: NSLocalizedString("New File", comment: "New file submenu"), action: nil, keyEquivalent: ""
             )
@@ -83,7 +86,7 @@ private final class FinderMenuController: NSObject {
             submenu.autoenablesItems = false
             for kind in FileKind.allCases {
                 let entry = item(kind.title, symbol: "doc", action: .create(kind), context: context, localized: true)
-                entry.isEnabled = !isCreatingFile
+                entry.isEnabled = !isPerformingDirectoryAction
                 submenu.addItem(entry)
             }
             newFile.submenu = submenu
@@ -113,16 +116,22 @@ private final class FinderMenuController: NSObject {
             do { try SystemActions.copyPaths(command.context.copyURLs) }
             catch { SystemActions.present(error: error) }
         case .terminal:
-            guard let directory = command.context.directoryURL else { return }
+            guard !isPerformingDirectoryAction, let directory = command.context.directoryURL else { return }
+            isPerformingDirectoryAction = true
             Task {
-                do { try await SystemActions.openTerminal(at: directory) }
+                defer { isPerformingDirectoryAction = false }
+                do {
+                    try await accessStore.withAccess(to: directory, requiresWrite: false) {
+                        try await SystemActions.openTerminal(at: directory)
+                    }
+                }
                 catch { SystemActions.present(error: error) }
             }
         case .create(let kind):
-            guard !isCreatingFile, let directory = command.context.directoryURL else { return }
-            isCreatingFile = true
+            guard !isPerformingDirectoryAction, let directory = command.context.directoryURL else { return }
+            isPerformingDirectoryAction = true
             Task {
-                defer { isCreatingFile = false }
+                defer { isPerformingDirectoryAction = false }
                 do {
                     guard let resources = Bundle(for: MacRightFinderSync.self).resourceURL else {
                         throw CocoaError(.fileNoSuchFile)

@@ -25,7 +25,7 @@ enum FileCreationError: LocalizedError {
 
     var recoverySuggestion: String? {
         if case .cleanupFailed(let url, _, _) = self {
-            return String(format: NSLocalizedString("A partial file remains at %@. Move it to the Trash before trying again.", comment: "Partial file location"), url.path)
+            return String(format: NSLocalizedString("A file may remain at %@. Check this location before trying again.", comment: "Partial file location"), url.path)
         }
         return nil
     }
@@ -69,17 +69,23 @@ struct FileCreationService: Sendable {
             }
 
             let handle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
+            // close() may release the descriptor even when it reports a writeback error.
+            // Capture ownership while the descriptor is valid, before writing or closing it.
+            var createdFile = stat()
+            let identityStatus = fstat(descriptor, &createdFile)
+            let identityError = errno
             do {
+                guard identityStatus == 0 else { throw posixError(identityError, url: target) }
                 try handle.write(contentsOf: content)
                 try handle.close()
                 return target
             } catch {
                 let writeError = error
-                // Keep the file descriptor open while confirming ownership of the partial path.
-                var opened = stat()
                 var current = stat()
-                let ownsPath = fstat(descriptor, &opened) == 0 && lstat(target.path, &current) == 0
-                    && opened.st_dev == current.st_dev && opened.st_ino == current.st_ino
+                let pathStatus = lstat(target.path, &current)
+                let pathError = errno
+                let ownsPath = identityStatus == 0 && pathStatus == 0
+                    && createdFile.st_dev == current.st_dev && createdFile.st_ino == current.st_ino
                 try? handle.close()
                 if ownsPath {
                     do {
@@ -87,6 +93,12 @@ struct FileCreationService: Sendable {
                     } catch {
                         throw FileCreationError.cleanupFailed(target, writeError: writeError, cleanupError: error)
                     }
+                } else if pathStatus == 0 || pathError != ENOENT {
+                    // A renamed or replaced path cannot safely be removed as this operation's file.
+                    throw FileCreationError.cleanupFailed(
+                        target, writeError: writeError,
+                        cleanupError: posixError(pathStatus == 0 ? ESTALE : pathError, url: target)
+                    )
                 }
                 throw writeError
             }

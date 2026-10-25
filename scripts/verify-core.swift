@@ -1,4 +1,5 @@
 import Foundation
+import Darwin
 import FinderSync
 
 /// Runs reproducible checks against the production core without a test framework or test classes.
@@ -13,6 +14,12 @@ struct CoreVerification {
         if arguments.count == 4, arguments[2] == "--create-one" {
             let output = try service.create(kind: .word, in: URL(fileURLWithPath: arguments[3]), baseName: "Concurrent")
             print(output.lastPathComponent)
+            return
+        }
+
+        if arguments.count == 4, arguments[2] == "--write-limit" {
+            try verifyPartialWriteFailure(service: service, directory: URL(fileURLWithPath: arguments[3]))
+            print("PASS: real partial-write failures remove only owned output and release descriptors")
             return
         }
 
@@ -99,6 +106,15 @@ struct CoreVerification {
         try Data().write(to: fixture.appendingPathComponent("Blank.docx"))
         try expectThrows("empty template") { _ = try missingTemplates.create(kind: .word, in: nested, baseName: "EmptyTemplate") }
         try expect(!FileManager.default.fileExists(atPath: nested.appendingPathComponent("EmptyTemplate.docx").path), "Empty template leaves no empty document")
+        let writeFailureFolder = fixture.appendingPathComponent("partial-write", isDirectory: true)
+        try FileManager.default.createDirectory(at: writeFailureFolder, withIntermediateDirectories: false)
+        let writeFailureProcess = Process()
+        writeFailureProcess.executableURL = URL(fileURLWithPath: CommandLine.arguments[0])
+        writeFailureProcess.arguments = [root.path, "--write-limit", writeFailureFolder.path]
+        try writeFailureProcess.run()
+        writeFailureProcess.waitUntilExit()
+        try expect(writeFailureProcess.terminationStatus == 0, "Partial-write failure cleanup")
+
         let blocked = fixture.appendingPathComponent("read-only", isDirectory: true)
         try FileManager.default.createDirectory(at: blocked, withIntermediateDirectories: false)
         try FileManager.default.setAttributes([.posixPermissions: 0o555], ofItemAtPath: blocked.path)
@@ -116,6 +132,31 @@ struct CoreVerification {
         try expect(descriptorsAfter == descriptorsBefore, "Repeated creation releases every file descriptor")
         print("PASS: 100 additional creations leave the open file descriptor count unchanged")
         print("Verification files: \(fixture.path)")
+    }
+
+    /// Exercises the production error path with the kernel's real file-size limit in a child process.
+    private static func verifyPartialWriteFailure(service: FileCreationService, directory: URL) throws {
+        var originalLimit = rlimit()
+        try expect(getrlimit(RLIMIT_FSIZE, &originalLimit) == 0, "Read file-size limit")
+        var limited = originalLimit
+        limited.rlim_cur = 16
+        let previousSignal = signal(SIGXFSZ, SIG_IGN)
+        defer { signal(SIGXFSZ, previousSignal) }
+        try expect(setrlimit(RLIMIT_FSIZE, &limited) == 0, "Set partial-write limit")
+        defer { precondition(setrlimit(RLIMIT_FSIZE, &originalLimit) == 0) }
+        let descriptorsBefore = try FileManager.default.contentsOfDirectory(atPath: "/dev/fd").count
+        for attempt in 0..<5 {
+            let name = "WriteFailure\(attempt)"
+            try expectThrows("kernel partial-write failure") {
+                _ = try service.create(kind: .word, in: directory, baseName: name)
+            }
+            try expect(
+                !FileManager.default.fileExists(atPath: directory.appendingPathComponent(name + ".docx").path),
+                "Owned partial file was moved to Trash"
+            )
+        }
+        let descriptorsAfter = try FileManager.default.contentsOfDirectory(atPath: "/dev/fd").count
+        try expect(descriptorsAfter == descriptorsBefore, "Partial-write failures release file descriptors")
     }
 
     private struct Failure: Error, CustomStringConvertible {

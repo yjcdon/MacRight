@@ -12,6 +12,7 @@ enum DirectoryAccessError: LocalizedError {
     case grantDoesNotCoverTarget
     case accessDenied
     case authorizationInProgress
+    case readOnlyVolume
     case bookmarkPersistenceFailed(Error)
 
     var errorDescription: String? {
@@ -26,6 +27,8 @@ enum DirectoryAccessError: LocalizedError {
             return NSLocalizedString("macOS did not grant access to this folder. Check its permissions and try again.", comment: "Directory grant failure")
         case .authorizationInProgress:
             return NSLocalizedString("Finish the open folder authorization dialog before trying again.", comment: "Authorization already open")
+        case .readOnlyVolume:
+            return NSLocalizedString("This disk is read-only. Choose a writable folder to create a file.", comment: "Read-only volume")
         case .bookmarkPersistenceFailed:
             return NSLocalizedString("Folder access could not be saved. Check free disk space and try again.", comment: "Bookmark save failure")
         }
@@ -48,10 +51,14 @@ final class DirectoryAccessStore {
     /// Grants access on the main actor, runs file work off the main thread, and always releases its scope.
     func withAccess<T: Sendable>(
         to directory: URL,
-        perform: @escaping @Sendable () throws -> T
+        requiresWrite: Bool = true,
+        perform: @escaping @Sendable () async throws -> T
     ) async throws -> T {
         guard directory.isFileURL else { throw DirectoryAccessError.invalidDirectory }
         let target = directory.standardizedFileURL.resolvingSymlinksInPath()
+        let values = try target.resourceValues(forKeys: [.isDirectoryKey, .volumeIsReadOnlyKey])
+        guard values.isDirectory == true else { throw DirectoryAccessError.invalidDirectory }
+        if requiresWrite, values.volumeIsReadOnly == true { throw DirectoryAccessError.readOnlyVolume }
         let scopedURL = try await authorizedURL(for: target)
         defer { scopedURL.stopAccessingSecurityScopedResource() }
         return try await Task.detached(priority: .userInitiated, operation: perform).value
@@ -115,11 +122,11 @@ final class DirectoryAccessStore {
         panel.canCreateDirectories = false
         panel.allowsMultipleSelection = false
         panel.directoryURL = target
-        panel.title = NSLocalizedString("Allow MacRight to Create Files", comment: "Directory authorization title")
+        panel.title = NSLocalizedString("Allow MacRight to Access This Folder", comment: "Directory authorization title")
         panel.prompt = NSLocalizedString("Allow Access", comment: "Directory authorization button")
         panel.message = needsRenewal
             ? NSLocalizedString("Folder access has expired. Select this folder or a parent folder to renew access.", comment: "Renew directory grant")
-            : NSLocalizedString("Select this folder or a parent folder to allow MacRight to create files there.", comment: "Directory grant instructions")
+            : NSLocalizedString("Select this folder or a parent folder to allow MacRight to create files or open Terminal there.", comment: "Directory grant instructions")
         NSApp.activate(ignoringOtherApps: true)
         let response = await withCheckedContinuation { continuation in
             panel.begin { continuation.resume(returning: $0) }
