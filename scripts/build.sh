@@ -20,6 +20,7 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" \
     "$EXT/Contents/MacOS" "$EXT/Contents/Resources/Templates" "$ICONSET"
 cp "$ROOT/MacRightApp/Info.plist" "$APP/Contents/Info.plist"
 cp "$ROOT/FinderExtension/Info.plist" "$EXT/Contents/Info.plist"
+cp "$ROOT/LICENSE" "$ROOT/NOTICE" "$APP/Contents/Resources/"
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 printf 'XPC!????' > "$EXT/Contents/PkgInfo"
 

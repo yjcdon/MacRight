@@ -6,12 +6,22 @@ import SwiftUI
 
 @main
 struct MacRightApp: App {
+    @NSApplicationDelegateAdaptor(MacRightApplicationDelegate.self) private var applicationDelegate
+
     var body: some Scene {
         Window("MacRight", id: "main") {
             ExtensionStatusView()
         }
         .defaultSize(width: 480, height: 430)
         .windowResizability(.contentSize)
+    }
+}
+
+@MainActor
+private final class MacRightApplicationDelegate: NSObject, NSApplicationDelegate {
+    /// Releases the guide app when its last window closes; Finder manages the extension independently.
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        true
     }
 }
 
