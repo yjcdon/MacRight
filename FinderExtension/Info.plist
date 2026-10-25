@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+    <key>CFBundleIdentifier</key><string>com.yjcdon.MacRight.FinderExtension</string>
+    <key>CFBundleExecutable</key><string>MacRightFinderExtension</string>
+    <key>CFBundleName</key><string>MacRightFinderExtension</string>
+    <key>CFBundleDisplayName</key><string>MacRight</string>
+    <key>CFBundlePackageType</key><string>XPC!</string>
+    <key>CFBundleShortVersionString</key><string>0.1.0</string>
+    <key>CFBundleVersion</key><string>1</string>
+    <key>CFBundleDevelopmentRegion</key><string>en</string>
+    <key>CFBundleLocalizations</key><array><string>en</string><string>zh-Hans</string></array>
+    <key>LSMinimumSystemVersion</key><string>13.0</string>
+    <key>LSUIElement</key><true/>
+    <key>NSExtension</key><dict>
+        <key>NSExtensionPointIdentifier</key><string>com.apple.FinderSync</string>
+        <key>NSExtensionPrincipalClass</key><string>MacRightFinderSync</string>
+        <key>NSExtensionAttributes</key><dict/>
+    </dict>
+</dict></plist>
