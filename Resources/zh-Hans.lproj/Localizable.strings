@@ -1,0 +1,31 @@
+/* MacRight app */
+"Useful actions, right in Finder." = "常用操作，右键完成。";
+"Finder extension is enabled" = "Finder 扩展已启用";
+"Finder extension is not enabled" = "Finder 扩展尚未启用";
+"Right-click in Finder or on your desktop to use MacRight." = "在 Finder 或桌面上右键，即可使用 MacRight。";
+"Open extension settings and enable MacRight, then return here to check its status." = "打开扩展设置并启用 MacRight，然后返回这里查看状态。";
+"Open Extension Settings" = "打开扩展设置";
+"Refresh Status" = "刷新状态";
+"Create Text, Markdown, Word, Excel, and PowerPoint files" = "新建文本、Markdown、Word、Excel 和 PowerPoint 文件";
+"Copy full paths, including multiple selected items" = "复制完整路径，支持多选";
+"Open Terminal in the selected folder" = "在目标文件夹打开终端";
+"Once enabled, Finder actions remain available when this window is closed." = "扩展启用后，关闭此窗口仍可使用右键功能。";
+
+/* Finder actions */
+"Copy Path" = "复制路径";
+"Open in Terminal" = "在终端打开";
+"New File" = "新建文件";
+"Text File" = "文本文件";
+"Markdown File" = "Markdown 文件";
+"Word Document" = "Word 文档";
+"Excel Workbook" = "Excel 工作簿";
+"PowerPoint Presentation" = "PowerPoint 演示文稿";
+"Untitled" = "未命名";
+
+/* Directory access and operation feedback */
+"Operation Failed" = "操作失败";
+"OK" = "好";
+"Grant Folder Access" = "授权文件夹访问";
+"Allow MacRight to create files in this folder." = "允许 MacRight 在此文件夹中新建文件。";
+"Choose Folder" = "选择文件夹";
+"Cancel" = "取消";

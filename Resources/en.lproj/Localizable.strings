@@ -1,0 +1,31 @@
+/* MacRight app */
+"Useful actions, right in Finder." = "Useful actions, right in Finder.";
+"Finder extension is enabled" = "Finder extension is enabled";
+"Finder extension is not enabled" = "Finder extension is not enabled";
+"Right-click in Finder or on your desktop to use MacRight." = "Right-click in Finder or on your desktop to use MacRight.";
+"Open extension settings and enable MacRight, then return here to check its status." = "Open extension settings and enable MacRight, then return here to check its status.";
+"Open Extension Settings" = "Open Extension Settings";
+"Refresh Status" = "Refresh Status";
+"Create Text, Markdown, Word, Excel, and PowerPoint files" = "Create Text, Markdown, Word, Excel, and PowerPoint files";
+"Copy full paths, including multiple selected items" = "Copy full paths, including multiple selected items";
+"Open Terminal in the selected folder" = "Open Terminal in the selected folder";
+"Once enabled, Finder actions remain available when this window is closed." = "Once enabled, Finder actions remain available when this window is closed.";
+
+/* Finder actions */
+"Copy Path" = "Copy Path";
+"Open in Terminal" = "Open in Terminal";
+"New File" = "New File";
+"Text File" = "Text File";
+"Markdown File" = "Markdown File";
+"Word Document" = "Word Document";
+"Excel Workbook" = "Excel Workbook";
+"PowerPoint Presentation" = "PowerPoint Presentation";
+"Untitled" = "Untitled";
+
+/* Directory access and operation feedback */
+"Operation Failed" = "Operation Failed";
+"OK" = "OK";
+"Grant Folder Access" = "Grant Folder Access";
+"Allow MacRight to create files in this folder." = "Allow MacRight to create files in this folder.";
+"Choose Folder" = "Choose Folder";
+"Cancel" = "Cancel";

@@ -1,0 +1,38 @@
+{
+  "templates": [
+    {
+      "file": "Resources/Templates/Office/Blank.docx",
+      "source": "untitled.docx",
+      "bytes": 9337,
+      "sha256": "f0105be9de956ff888505afc0b6203e8fda2c5f4efd8b627188500aa863663d5",
+      "source_sha256": "3c83152564b3025e6429b2226c4b4e4205deb137eaa779e2ece7ad3800b435c0",
+      "modified_zip_entries": [
+        "docProps/app.xml",
+        "docProps/core.xml",
+        "docProps/custom.xml"
+      ]
+    },
+    {
+      "file": "Resources/Templates/Office/Blank.xlsx",
+      "source": "untitled.xlsx",
+      "bytes": 8232,
+      "sha256": "fa7745a931794c93c1e8ba936085ce38343f19595cb202044d7b1079c6cdc270",
+      "source_sha256": "9a0cc0cfe72e97c22d218b2f9de9fad60d711cdc5a2a6aa98e7e627989ed701b",
+      "modified_zip_entries": [
+        "docProps/core.xml",
+        "docProps/custom.xml"
+      ]
+    },
+    {
+      "file": "Resources/Templates/Office/Blank.pptx",
+      "source": "untitled.pptx",
+      "bytes": 58498,
+      "sha256": "8e133cf56b072afb788901ed50b6812ecf6efa83d7a8e07710243eb481a2020d",
+      "source_sha256": "fce85daa87445c7b1bd75f28da00018be97f83fd26f0630c2c5a4052ee4589b7",
+      "modified_zip_entries": [
+        "docProps/core.xml",
+        "docProps/custom.xml"
+      ]
+    }
+  ]
+}

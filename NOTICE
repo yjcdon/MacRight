@@ -1,0 +1,16 @@
+MacRight
+
+MacRight references the design and behavior of MacNewFile:
+https://github.com/GarfieldFluffJr/MacNewFile
+
+The AppIcon asset catalog is copied unchanged from MacNewFile.
+Reference baseline: local MacNewFile commit
+9fd2a1b4a18d606701bd57fd8acca94c26b6268d.
+Credit for the reused assets remains with the original project contributors.
+
+MacRight uses the GNU General Public License, version 3, as included in LICENSE.
+
+The three Office template documents were supplied by the project owner.
+Their repository copies have author and document identifier metadata removed.
+See Resources/README.md and Resources/Templates/manifest.json for provenance
+and the exact scope of these resource changes, dated 2026-10-25.
