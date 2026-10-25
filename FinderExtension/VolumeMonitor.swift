@@ -56,6 +56,7 @@ final class VolumeMonitor {
         guard updated != directoryURLs else { return }
         directoryURLs = updated
         FIFinderSyncController.default().directoryURLs = updated
+        logger.debug("Finder menu coverage updated for \(updated.count) roots.")
     }
 
 }

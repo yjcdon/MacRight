@@ -23,12 +23,7 @@
 "Untitled" = "未命名";
 
 /* Directory access and operation feedback */
-"Operation Failed" = "操作失败";
 "OK" = "好";
-"Grant Folder Access" = "授权文件夹访问";
-"Allow MacRight to create files in this folder." = "允许 MacRight 在此文件夹中新建文件。";
-"Choose Folder" = "选择文件夹";
-"Cancel" = "取消";
 "Choose a local folder for this operation." = "请选择本地文件夹执行此操作。";
 "Choose the target folder or a parent folder that contains it." = "请选择目标文件夹，或包含它的上级文件夹。";
 "macOS did not grant access to this folder. Check its permissions and try again." = "macOS 未授予此文件夹的访问权限，请检查权限后重试。";

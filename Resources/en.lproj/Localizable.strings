@@ -23,12 +23,7 @@
 "Untitled" = "Untitled";
 
 /* Directory access and operation feedback */
-"Operation Failed" = "Operation Failed";
 "OK" = "OK";
-"Grant Folder Access" = "Grant Folder Access";
-"Allow MacRight to create files in this folder." = "Allow MacRight to create files in this folder.";
-"Choose Folder" = "Choose Folder";
-"Cancel" = "Cancel";
 "Choose a local folder for this operation." = "Choose a local folder for this operation.";
 "Choose the target folder or a parent folder that contains it." = "Choose the target folder or a parent folder that contains it.";
 "macOS did not grant access to this folder. Check its permissions and try again." = "macOS did not grant access to this folder. Check its permissions and try again.";
