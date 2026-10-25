@@ -28,4 +28,3 @@
 现有 Contents.json 为两个 512 像素文件配置了槽位。实现阶段验证构建与不同尺寸显示；需要补齐时基于同一原图生成，不改变图案。
 
 来源：[GarfieldFluffJr/MacNewFile](https://github.com/GarfieldFluffJr/MacNewFile)，许可见仓库根目录 [LICENSE](../LICENSE) 与 [NOTICE](../NOTICE)。
-
