@@ -7,7 +7,6 @@ import OSLog
 enum SystemActionError: LocalizedError {
     case noPaths
     case clipboardUnavailable
-    case terminalUnavailable
     case invalidDirectory
 
     var errorDescription: String? {
@@ -16,8 +15,6 @@ enum SystemActionError: LocalizedError {
             return NSLocalizedString("There are no file paths to copy.", comment: "Missing clipboard input")
         case .clipboardUnavailable:
             return NSLocalizedString("The clipboard could not be updated. Try copying the paths again.", comment: "Clipboard failure")
-        case .terminalUnavailable:
-            return NSLocalizedString("Terminal could not be found on this Mac.", comment: "Missing Terminal")
         case .invalidDirectory:
             return NSLocalizedString("The target folder no longer exists.", comment: "Missing action directory")
         }

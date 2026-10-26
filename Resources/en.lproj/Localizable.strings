@@ -8,12 +8,25 @@
 "Refresh Status" = "Refresh Status";
 "Create Text, Markdown, Word, Excel, and PowerPoint files" = "Create Text, Markdown, Word, Excel, and PowerPoint files";
 "Copy full paths, including multiple selected items" = "Copy full paths, including multiple selected items";
-"Open Terminal in the selected folder" = "Open Terminal in the selected folder";
+"Open Terminal in the selected folder" = "Open your preferred terminal in the selected folder";
 "Once enabled, Finder actions remain available when this window is closed." = "Once enabled, Finder actions remain available when this window is closed.";
+"Terminal Application" = "Terminal Application";
+"No Terminal Application Selected" = "No Terminal Application Selected";
+"Choose Terminal Application…" = "Choose Terminal Application…";
+"Choose" = "Choose";
+"Choose the terminal application to open folders from Finder." = "Choose the terminal application to open folders from Finder.";
+"The selected terminal application could not be found. Choose it again." = "The selected terminal application could not be found. Choose it again.";
+"Changes are saved automatically and apply immediately in Finder." = "Changes are saved automatically and apply immediately in Finder.";
+"System Terminal" = "System Terminal";
+"The preferred terminal setting is invalid. Choose a terminal in MacRight." = "The preferred terminal setting is invalid. Choose a terminal in MacRight.";
+"The terminal preference could not be synchronized. Try again." = "The terminal preference could not be synchronized. Try again.";
+"Choose a valid application (.app)." = "Choose a valid application (.app).";
+"The selected application %@ is unavailable at its saved location." = "The selected application %@ is unavailable at its saved location.";
+"Choose the application again in MacRight." = "Choose the application again in MacRight.";
 
 /* Finder actions */
 "Copy Path" = "Copy Path";
-"Open in Terminal" = "Open in Terminal";
+"Open in Terminal" = "Open Terminal Here";
 "New File" = "New File";
 "Text File" = "Text File";
 "Markdown File" = "Markdown File";
@@ -34,7 +47,6 @@
 "Select this folder or a parent folder to allow MacRight to create files or open Terminal there." = "Select this folder or a parent folder to allow MacRight to create files or open Terminal there.";
 "There are no file paths to copy." = "There are no file paths to copy.";
 "The clipboard could not be updated. Try copying the paths again." = "The clipboard could not be updated. Try copying the paths again.";
-"Terminal could not be found on this Mac." = "Terminal could not be found on this Mac.";
 "The target folder no longer exists." = "The target folder no longer exists.";
 "MacRight Could Not Complete the Operation" = "MacRight Could Not Complete the Operation";
 "The new file name must be a single nonempty name." = "The new file name must be a single nonempty name.";

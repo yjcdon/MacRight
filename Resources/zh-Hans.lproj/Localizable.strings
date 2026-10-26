@@ -8,12 +8,25 @@
 "Refresh Status" = "刷新状态";
 "Create Text, Markdown, Word, Excel, and PowerPoint files" = "新建文本、Markdown、Word、Excel 和 PowerPoint 文件";
 "Copy full paths, including multiple selected items" = "复制完整路径，支持多选";
-"Open Terminal in the selected folder" = "在目标文件夹打开终端";
+"Open Terminal in the selected folder" = "在目标文件夹打开所选终端";
 "Once enabled, Finder actions remain available when this window is closed." = "扩展启用后，关闭此窗口仍可使用右键功能。";
+"Terminal Application" = "终端应用";
+"No Terminal Application Selected" = "尚未选择终端应用";
+"Choose Terminal Application…" = "选择终端应用…";
+"Choose" = "选择";
+"Choose the terminal application to open folders from Finder." = "请选择用于从 Finder 打开文件夹的终端应用。";
+"The selected terminal application could not be found. Choose it again." = "未找到所选终端应用，请重新选择。";
+"Changes are saved automatically and apply immediately in Finder." = "更改会自动保存，并立即在 Finder 中生效。";
+"System Terminal" = "系统终端";
+"The preferred terminal setting is invalid. Choose a terminal in MacRight." = "首选终端设置无效，请在 MacRight 中重新选择终端。";
+"The terminal preference could not be synchronized. Try again." = "无法同步终端设置，请重试。";
+"Choose a valid application (.app)." = "请选择有效的应用程序（.app）。";
+"The selected application %@ is unavailable at its saved location." = "在已保存的位置找不到所选应用 %@。";
+"Choose the application again in MacRight." = "请在 MacRight 中重新选择该应用。";
 
 /* Finder actions */
 "Copy Path" = "复制路径";
-"Open in Terminal" = "在终端打开";
+"Open in Terminal" = "在此打开终端";
 "New File" = "新建文件";
 "Text File" = "文本文件";
 "Markdown File" = "Markdown 文件";
@@ -34,7 +47,6 @@
 "Select this folder or a parent folder to allow MacRight to create files or open Terminal there." = "请选择此文件夹或其上级文件夹，允许 MacRight 在其中新建文件或打开终端。";
 "There are no file paths to copy." = "没有可复制的文件路径。";
 "The clipboard could not be updated. Try copying the paths again." = "无法更新剪贴板，请重新复制路径。";
-"Terminal could not be found on this Mac." = "未找到系统终端应用。";
 "The target folder no longer exists." = "目标文件夹已不存在。";
 "MacRight Could Not Complete the Operation" = "MacRight 无法完成操作";
 "The new file name must be a single nonempty name." = "新文件名不能为空，也不能包含路径。";

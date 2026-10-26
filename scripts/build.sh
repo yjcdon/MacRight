@@ -26,7 +26,7 @@ printf 'XPC!????' > "$EXT/Contents/PkgInfo"
 
 SWIFT_FLAGS=(-sdk "$SDK" -target "$ARCH-apple-macos13.0" -swift-version 6 -warnings-as-errors -O -parse-as-library)
 xcrun swiftc "${SWIFT_FLAGS[@]}" -module-name MacRight \
-    "$ROOT"/MacRightApp/*.swift -framework SwiftUI -framework FinderSync \
+    "$ROOT"/MacRightApp/*.swift "$ROOT"/Shared/Terminal*.swift -framework SwiftUI -framework FinderSync \
     -o "$APP/Contents/MacOS/MacRight"
 xcrun swiftc "${SWIFT_FLAGS[@]}" -module-name MacRightFinderExtension \
     -application-extension -emit-executable -Xlinker -e -Xlinker _NSExtensionMain \
