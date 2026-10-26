@@ -17,7 +17,7 @@ esac
 
 # Build both executables from repository sources; no Xcode-generated assets are required.
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" \
-    "$EXT/Contents/MacOS" "$EXT/Contents/Resources/Templates" "$ICONSET"
+    "$EXT/Contents/MacOS" "$EXT/Contents/Resources/Templates" "$EXT/Contents/Resources/MenuIcons" "$ICONSET"
 cp "$ROOT/MacRightApp/Info.plist" "$APP/Contents/Info.plist"
 cp "$ROOT/FinderExtension/Info.plist" "$EXT/Contents/Info.plist"
 cp "$ROOT/LICENSE" "$ROOT/NOTICE" "$APP/Contents/Resources/"
@@ -35,6 +35,7 @@ xcrun swiftc "${SWIFT_FLAGS[@]}" -module-name MacRightFinderExtension \
     -o "$EXT/Contents/MacOS/MacRightFinderExtension"
 
 cp "$ROOT"/Resources/Templates/Office/* "$EXT/Contents/Resources/Templates/"
+cp "$ROOT"/Resources/MenuIcons/*.png "$EXT/Contents/Resources/MenuIcons/"
 for language in en zh-Hans; do
     mkdir -p "$APP/Contents/Resources/$language.lproj" "$EXT/Contents/Resources/$language.lproj"
     cp "$ROOT/Resources/$language.lproj/Localizable.strings" "$APP/Contents/Resources/$language.lproj/"

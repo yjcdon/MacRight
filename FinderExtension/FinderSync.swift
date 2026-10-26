@@ -82,10 +82,13 @@ private final class FinderMenuController: NSObject {
                 title: NSLocalizedString("New File", comment: "New file submenu"), action: nil, keyEquivalent: ""
             )
             newFile.image = NSImage(systemSymbolName: "doc.badge.plus", accessibilityDescription: nil)
+            newFile.image?.isTemplate = true
             let submenu = NSMenu()
             submenu.autoenablesItems = false
+            let bundle = Bundle(for: MacRightFinderSync.self)
             for kind in FileKind.allCases {
-                let entry = item(kind.title, symbol: "doc", action: .create(kind), context: context, localized: true)
+                let entry = item(kind.title, symbol: nil, action: .create(kind), context: context, localized: true)
+                entry.image = kind.menuIcon(in: bundle)
                 entry.isEnabled = !isPerformingDirectoryAction
                 submenu.addItem(entry)
             }
@@ -96,14 +99,17 @@ private final class FinderMenuController: NSObject {
     }
 
     private func item(
-        _ title: String, symbol: String, action: FinderAction, context: FinderContext, localized: Bool = false
+        _ title: String, symbol: String?, action: FinderAction, context: FinderContext, localized: Bool = false
     ) -> NSMenuItem {
         let item = NSMenuItem(
             title: localized ? title : NSLocalizedString(title, comment: "Finder action"),
             action: #selector(performAction(_:)), keyEquivalent: ""
         )
         item.target = self
-        item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)
+        if let symbol {
+            item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)
+            item.image?.isTemplate = true
+        }
         item.representedObject = MenuAction(action: action, context: context)
         return item
     }

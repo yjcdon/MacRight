@@ -4,6 +4,11 @@ MacRight references the design and behavior of MacNewFile:
 https://github.com/GarfieldFluffJr/MacNewFile
 
 The AppIcon asset catalog is copied unchanged from MacNewFile.
+The five New File menu icons in Resources/MenuIcons are also copied unchanged
+from MacNewFileFinderExtension/Assets.xcassets: edit, document, word, excel,
+and powerpoint image sets. Only their resource file names have changed.
+The text and Markdown icons use the system template rendering mode for light
+and dark appearances; the three Office icons retain their original colors.
 Reference baseline: local MacNewFile commit
 9fd2a1b4a18d606701bd57fd8acca94c26b6268d.
 Credit for the reused assets remains with the original project contributors.

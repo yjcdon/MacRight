@@ -28,3 +28,17 @@
 现有 Contents.json 为两个 512 像素文件配置了槽位。构建脚本已从同一原图生成标准尺寸的 AppIcon.icns，不改变图案；实际界面显示仍须验收。
 
 来源：[GarfieldFluffJr/MacNewFile](https://github.com/GarfieldFluffJr/MacNewFile)，许可见仓库根目录 [LICENSE](../LICENSE) 与 [NOTICE](../NOTICE)。
+
+## 新建文件菜单图标
+
+五个 `MenuIcons` PNG 均原样复制自同一参考基线的 `MacNewFileFinderExtension/Assets.xcassets`，仅修改资源文件名，图片内容不变。
+
+| 内置资源 | 原项目资源 | 显示方式 |
+| --- | --- | --- |
+| `MenuIcons/text.png` | `edit.imageset/edit.png` | 作为 template 图标，由系统适配深浅外观 |
+| `MenuIcons/markdown.png` | `document.imageset/document.png` | 作为 template 图标，由系统适配深浅外观 |
+| `MenuIcons/word.png` | `word.imageset/word-processor.png` | 保留原彩色图案 |
+| `MenuIcons/excel.png` | `excel.imageset/sheet.png` | 保留原彩色图案 |
+| `MenuIcons/powerPoint.png` | `powerpoint.imageset/slide.png` | 保留原彩色图案 |
+
+template 属性在运行时设置，不修改 PNG。资源已与原项目文件逐字节核对一致，沿用上述 MacNewFile 来源及许可说明。
