@@ -29,6 +29,33 @@ MacRight 是使用 Swift 编写的轻量 macOS Finder 右键工具。在当前�
 
 当前版本：**v0.1.0**。发布包为 **Apple Silicon（arm64）**，最低部署版本为 **macOS 13 Ventura**；实际运行验证环境为 macOS 27.0.1 / Apple Silicon。尚未在 macOS 13 实机、Intel Mac、云盘及网络卷完成验证。
 
+### Homebrew
+
+```sh
+brew tap yjcdon/macright https://github.com/yjcdon/MacRight
+brew install --cask yjcdon/macright/macright
+```
+
+如果 Homebrew 提示尚未信任此安装项，先执行以下命令，再重新安装：
+
+```sh
+brew trust --cask yjcdon/macright/macright
+```
+
+已手动安装相同版本时，可使用 `brew install --cask --adopt yjcdon/macright/macright` 接管内容完全相同的现有应用；内容不同时 Homebrew 会拒绝接管。
+
+升级与卸载：
+
+```sh
+brew update
+brew upgrade --cask yjcdon/macright/macright
+brew uninstall --cask yjcdon/macright/macright
+```
+
+安装后打开 MacRight，按指引启用 Finder 扩展。Homebrew 与手动下载使用相同的 Release ZIP 和 SHA-256，普通卸载保留终端偏好及目录授权数据。
+
+### 手动下载
+
 1. 在 [Releases](https://github.com/yjcdon/MacRight/releases/latest) 下载 `MacRight-0.1.0-macos-arm64.zip`，解压后将 `MacRight.app` 拖入“应用程序”。
 2. 打开 MacRight，点击“打开扩展设置”，在系统设置中启用 MacRight Finder 扩展。不同 macOS 版本的设置位置可能不同。
 3. 回到 Finder，在文件夹空白处或项目上右键使用。
@@ -70,6 +97,8 @@ bash scripts/package.sh
 ```
 
 ZIP 与 SHA-256 文件位于 `dist/`。当前构建未经 Developer ID 公证，不将本地签名校验等同于公证或所有系统上的兼容性验证。
+
+Homebrew 安装定义维护在 [Casks/macright.rb](Casks/macright.rb)。每次发布新版时，同步更新其中的 `version` 与 Release ZIP 的 `sha256`；`livecheck` 仅检查最新 Release，不自动更新安装定义。
 
 构建目录中的 `.app` 也可能被系统索引。安装后可将 `build/arm64/MacRight.app` 移入废纸篓，保留“应用程序”中的正式副本；再次打包前需重新构建。
 
