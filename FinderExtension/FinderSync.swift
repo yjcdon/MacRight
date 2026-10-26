@@ -38,6 +38,17 @@ final class MacRightFinderSync: FIFinderSync {
         }
         return DispatchQueue.main.sync { makeMenu() }.menu
     }
+
+    /// Finder routes menu selectors to the principal extension, regardless of an item's target.
+    @objc func performAction(_ sender: NSMenuItem) {
+        let tag = sender.tag
+        let controller = controller
+        if Thread.isMainThread {
+            MainActor.assumeIsolated { controller.performAction(tag: tag) }
+        } else {
+            DispatchQueue.main.sync { controller.performAction(tag: tag) }
+        }
+    }
 }
 
 /// Only used to return a completed AppKit menu through the synchronous Objective-C callback.
@@ -52,6 +63,8 @@ private final class FinderMenuController: NSObject {
     private let volumeMonitor: VolumeMonitor
     private let accessStore = DirectoryAccessStore()
     private var isPerformingDirectoryAction = false
+    private var commands: [Int: MenuAction] = [:]
+    private var nextCommandTag = 1
 
     init(volumeMonitor: VolumeMonitor) {
         self.volumeMonitor = volumeMonitor
@@ -103,20 +116,30 @@ private final class FinderMenuController: NSObject {
     ) -> NSMenuItem {
         let item = NSMenuItem(
             title: localized ? title : NSLocalizedString(title, comment: "Finder action"),
-            action: #selector(performAction(_:)), keyEquivalent: ""
+            action: #selector(MacRightFinderSync.performAction(_:)), keyEquivalent: ""
         )
-        item.target = self
+        // Finder transports the numeric tag; custom representedObject values aren't its action contract.
+        item.tag = nextCommandTag
+        commands[nextCommandTag] = MenuAction(action: action, context: context)
+        nextCommandTag += 1
+        // Retain recent menu snapshots, including menus requested by other Finder windows.
+        commands.removeValue(forKey: nextCommandTag - 257)
         if let symbol {
             item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)
             item.image?.isTemplate = true
         }
-        item.representedObject = MenuAction(action: action, context: context)
         return item
     }
 
     /// Executes the clicked menu's captured action without consulting a later Finder selection.
-    @objc private func performAction(_ sender: NSMenuItem) {
-        guard let command = sender.representedObject as? MenuAction else { return }
+    func performAction(tag: Int) {
+        guard let command = commands[tag] else {
+            SystemActions.present(error: NSError(
+                domain: "com.yjcdon.MacRight.Menu", code: 1,
+                userInfo: [NSLocalizedDescriptionKey: NSLocalizedString("This menu has expired. Please reopen it.", comment: "Expired Finder menu")]
+            ))
+            return
+        }
         switch command.action {
         case .copy:
             do { try SystemActions.copyPaths(command.context.copyURLs) }
@@ -162,8 +185,8 @@ private enum FinderAction {
     case create(FileKind)
 }
 
-/// Retains value snapshots in an AppKit menu item; it never retains the extension instance.
-private final class MenuAction: NSObject {
+/// Retains the original menu context without retaining AppKit menu objects.
+private struct MenuAction {
     let action: FinderAction
     let context: FinderContext
 

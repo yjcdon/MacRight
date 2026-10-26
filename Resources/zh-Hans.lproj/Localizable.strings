@@ -57,3 +57,4 @@
 "A file may remain at %@. Check this location before trying again." = "文件可能仍保留在 %@，请检查此位置后再重试。";
 "Folder access could not be saved. Check free disk space and try again." = "无法保存文件夹授权，请检查磁盘可用空间后重试。";
 "This disk is read-only. Choose a writable folder to create a file." = "此磁盘为只读，请选择可写的文件夹新建文件。";
+"This menu has expired. Please reopen it." = "此菜单已失效，请重新打开右键菜单。";

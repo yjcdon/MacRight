@@ -57,3 +57,4 @@
 "A file may remain at %@. Check this location before trying again." = "A file may remain at %@. Check this location before trying again.";
 "Folder access could not be saved. Check free disk space and try again." = "Folder access could not be saved. Check free disk space and try again.";
 "This disk is read-only. Choose a writable folder to create a file." = "This disk is read-only. Choose a writable folder to create a file.";
+"This menu has expired. Please reopen it." = "This menu has expired. Please reopen it.";
