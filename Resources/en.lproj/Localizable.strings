@@ -1,22 +1,15 @@
 /* MacRight app */
-"Useful actions, right in Finder." = "Useful actions, right in Finder.";
 "Finder extension is enabled" = "Finder extension is enabled";
 "Finder extension is not enabled" = "Finder extension is not enabled";
 "Right-click in Finder or on your desktop to use MacRight." = "Right-click in Finder or on your desktop to use MacRight.";
 "Open extension settings and enable MacRight, then return here to check its status." = "Open extension settings and enable MacRight, then return here to check its status.";
 "Open Extension Settings" = "Open Extension Settings";
-"Refresh Status" = "Refresh Status";
-"Create Text, Markdown, Word, Excel, and PowerPoint files" = "Create Text, Markdown, Word, Excel, and PowerPoint files";
-"Copy full paths, including multiple selected items" = "Copy full paths, including multiple selected items";
-"Open Terminal in the selected folder" = "Open your preferred terminal in the selected folder";
-"Once enabled, Finder actions remain available when this window is closed." = "Once enabled, Finder actions remain available when this window is closed.";
 "Terminal Application" = "Terminal Application";
 "No Terminal Application Selected" = "No Terminal Application Selected";
 "Choose Terminal Application…" = "Choose Terminal Application…";
 "Choose" = "Choose";
 "Choose the terminal application to open folders from Finder." = "Choose the terminal application to open folders from Finder.";
 "The selected terminal application could not be found. Choose it again." = "The selected terminal application could not be found. Choose it again.";
-"Changes are saved automatically and apply immediately in Finder." = "Changes are saved automatically and apply immediately in Finder.";
 "System Terminal" = "System Terminal";
 "The preferred terminal setting is invalid. Choose a terminal in MacRight." = "The preferred terminal setting is invalid. Choose a terminal in MacRight.";
 "The terminal preference could not be synchronized. Try again." = "The terminal preference could not be synchronized. Try again.";
@@ -44,7 +37,7 @@
 "Allow MacRight to Access This Folder" = "Allow MacRight to Access This Folder";
 "Allow Access" = "Allow Access";
 "Folder access has expired. Select this folder or a parent folder to renew access." = "Folder access has expired. Select this folder or a parent folder to renew access.";
-"Select this folder or a parent folder to allow MacRight to create files or open Terminal there." = "Select this folder or a parent folder to allow MacRight to create files or open Terminal there.";
+"Select this folder or a parent folder to allow MacRight to create files there." = "Select this folder or a parent folder to allow MacRight to create files there.";
 "There are no file paths to copy." = "There are no file paths to copy.";
 "The clipboard could not be updated. Try copying the paths again." = "The clipboard could not be updated. Try copying the paths again.";
 "The target folder no longer exists." = "The target folder no longer exists.";
@@ -58,3 +51,10 @@
 "Folder access could not be saved. Check free disk space and try again." = "Folder access could not be saved. Check free disk space and try again.";
 "This disk is read-only. Choose a writable folder to create a file." = "This disk is read-only. Choose a writable folder to create a file.";
 "This menu has expired. Please reopen it." = "This menu has expired. Please reopen it.";
+
+/* Settings window */
+"Finder Extension" = "Finder Extension";
+"Enabled" = "Enabled";
+"Setup Required" = "Setup Required";
+"Extension Settings…" = "Extension Settings…";
+"Choose…" = "Choose…";

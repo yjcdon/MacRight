@@ -40,7 +40,26 @@ enum DirectoryAccessError: LocalizedError {
 final class DirectoryAccessStore {
     private let bookmarkDirectory: URL
     private let logger = Logger(subsystem: "com.yjcdon.MacRight", category: "DirectoryAccess")
-    private var isPrompting = false
+    private var authorizationPanel: NSOpenPanel?
+
+    var isAwaitingAuthorization: Bool { authorizationPanel != nil }
+
+    /// Shows the pending grant on the screen where the user invoked the Finder action.
+    @discardableResult
+    func presentPendingAuthorization() -> Bool {
+        guard let panel = authorizationPanel else { return false }
+        if let screen = NSScreen.screens.first(where: { $0.frame.contains(NSEvent.mouseLocation) }) {
+            let visibleFrame = screen.visibleFrame
+            panel.setFrameOrigin(NSPoint(
+                x: visibleFrame.midX - panel.frame.width / 2,
+                y: visibleFrame.midY - panel.frame.height / 2
+            ))
+        }
+        panel.collectionBehavior.insert(.moveToActiveSpace)
+        NSApp.activate(ignoringOtherApps: true)
+        panel.makeKeyAndOrderFront(nil)
+        return true
+    }
 
     init(bookmarkDirectory: URL? = nil) {
         self.bookmarkDirectory = bookmarkDirectory ?? FileManager.default.urls(
@@ -51,14 +70,13 @@ final class DirectoryAccessStore {
     /// Grants access on the main actor, runs file work off the main thread, and always releases its scope.
     func withAccess<T: Sendable>(
         to directory: URL,
-        requiresWrite: Bool = true,
         perform: @escaping @Sendable () async throws -> T
     ) async throws -> T {
         guard directory.isFileURL else { throw DirectoryAccessError.invalidDirectory }
         let target = directory.standardizedFileURL.resolvingSymlinksInPath()
         let values = try target.resourceValues(forKeys: [.isDirectoryKey, .volumeIsReadOnlyKey])
         guard values.isDirectory == true else { throw DirectoryAccessError.invalidDirectory }
-        if requiresWrite, values.volumeIsReadOnly == true { throw DirectoryAccessError.readOnlyVolume }
+        if values.volumeIsReadOnly == true { throw DirectoryAccessError.readOnlyVolume }
         let scopedURL = try await authorizedURL(for: target)
         defer { scopedURL.stopAccessingSecurityScopedResource() }
         return try await Task.detached(priority: .userInitiated, operation: perform).value
@@ -112,11 +130,10 @@ final class DirectoryAccessStore {
     }
 
     private func requestAuthorization(for target: URL, needsRenewal: Bool) async throws -> URL {
-        guard !isPrompting else { throw DirectoryAccessError.authorizationInProgress }
-        isPrompting = true
-        defer { isPrompting = false }
-
+        guard authorizationPanel == nil else { throw DirectoryAccessError.authorizationInProgress }
         let panel = NSOpenPanel()
+        authorizationPanel = panel
+        defer { authorizationPanel = nil }
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
         panel.canCreateDirectories = false
@@ -126,10 +143,11 @@ final class DirectoryAccessStore {
         panel.prompt = NSLocalizedString("Allow Access", comment: "Directory authorization button")
         panel.message = needsRenewal
             ? NSLocalizedString("Folder access has expired. Select this folder or a parent folder to renew access.", comment: "Renew directory grant")
-            : NSLocalizedString("Select this folder or a parent folder to allow MacRight to create files or open Terminal there.", comment: "Directory grant instructions")
+            : NSLocalizedString("Select this folder or a parent folder to allow MacRight to create files there.", comment: "Directory grant instructions")
         NSApp.activate(ignoringOtherApps: true)
         let response = await withCheckedContinuation { continuation in
             panel.begin { continuation.resume(returning: $0) }
+            presentPendingAuthorization()
         }
         guard response == .OK, let selectedURL = panel.url else { throw DirectoryAccessError.cancelled }
         // Open panels implicitly start access for the selected URL.

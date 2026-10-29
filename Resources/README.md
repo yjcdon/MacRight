@@ -23,11 +23,10 @@
 
 ## 应用图标
 
-`Assets.xcassets/AppIcon.appiconset` 原样复制自 MacNewFile 的 `MacNewFile/Assets.xcassets/AppIcon.appiconset`，以本地提交 `9fd2a1b4a18d606701bd57fd8acca94c26b6268d` 为参考。
-
-现有 Contents.json 为两个 512 像素文件配置了槽位。构建脚本已从同一原图生成标准尺寸的 AppIcon.icns，不改变图案；实际界面显示仍须验收。
-
-来源：[GarfieldFluffJr/MacNewFile](https://github.com/GarfieldFluffJr/MacNewFile)，许可见仓库根目录 [LICENSE](../LICENSE) 与 [NOTICE](../NOTICE)。
+采用 [Lucide square-mouse-pointer](https://lucide.dev/icons/square-mouse-pointer)，以白色圆角底搭配黑色线条与浅灰边缘。
+原始矢量保存在 `IconSource/square-mouse-pointer.svg`，应用版保存在 `IconSource/AppIcon.svg`。
+`Assets.xcassets/AppIcon.appiconset/AppIcon.png` 为 1024 像素源图，使用 `sips -s format png Resources/IconSource/AppIcon.svg --out Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png` 导出。
+构建脚本生成标准尺寸的 AppIcon.icns。ISC 许可位于 `Licenses/Lucide-LICENSE`，随应用一起分发。
 
 ## 新建文件菜单图标
 

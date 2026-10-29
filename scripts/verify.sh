@@ -17,7 +17,7 @@ xcrun swiftc -swift-version 6 -warnings-as-errors -O \
     "$ROOT/scripts/verify-system.swift" -o "$ROOT/build/verification/verify-system"
 "$ROOT/build/verification/verify-system"
 
-plutil -lint "$ROOT/MacRightApp/Info.plist" "$ROOT/FinderExtension/Info.plist" \
+plutil -lint "$ROOT/TerminalLauncher/Info.plist" "$ROOT/MacRightApp/Info.plist" "$ROOT/FinderExtension/Info.plist" \
     "$ROOT/FinderExtension/FinderExtension.entitlements" \
     "$ROOT/Resources/en.lproj/Localizable.strings" "$ROOT/Resources/zh-Hans.lproj/Localizable.strings"
 

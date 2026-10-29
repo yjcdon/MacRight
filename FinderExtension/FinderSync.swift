@@ -10,45 +10,32 @@ final class MacRightFinderSync: FIFinderSync {
     private let controller: FinderMenuController
 
     override init() {
-        let makeController: @MainActor () -> FinderMenuController = {
-            FinderMenuController(volumeMonitor: VolumeMonitor())
-        }
-        if Thread.isMainThread {
-            controller = MainActor.assumeIsolated(makeController)
-        } else {
-            controller = DispatchQueue.main.sync { makeController() }
-        }
+        controller = onMainActor { FinderMenuController(volumeMonitor: VolumeMonitor()) }
         super.init()
         let controller = controller
-        if Thread.isMainThread {
-            MainActor.assumeIsolated { controller.start() }
-        } else {
-            DispatchQueue.main.sync { controller.start() }
-        }
+        onMainActor { controller.start() }
     }
 
     /// Returns synchronously, while all access to the menu and controller happens on the main thread.
     override func menu(for menuKind: FIMenuKind) -> NSMenu? {
         let controller = controller
-        let makeMenu: @MainActor () -> SynchronousMenuResult = {
+        return onMainActor {
             SynchronousMenuResult(menu: controller.menu(for: menuKind))
-        }
-        if Thread.isMainThread {
-            return MainActor.assumeIsolated(makeMenu).menu
-        }
-        return DispatchQueue.main.sync { makeMenu() }.menu
+        }.menu
     }
 
     /// Finder routes menu selectors to the principal extension, regardless of an item's target.
     @objc func performAction(_ sender: NSMenuItem) {
         let tag = sender.tag
         let controller = controller
-        if Thread.isMainThread {
-            MainActor.assumeIsolated { controller.performAction(tag: tag) }
-        } else {
-            DispatchQueue.main.sync { controller.performAction(tag: tag) }
-        }
+        onMainActor { controller.performAction(tag: tag) }
     }
+}
+
+/// Executes Finder's synchronous callbacks on the main actor before returning their result.
+private func onMainActor<T: Sendable>(_ operation: @MainActor () -> T) -> T {
+    if Thread.isMainThread { return MainActor.assumeIsolated(operation) }
+    return DispatchQueue.main.sync { operation() }
 }
 
 /// Only used to return a completed AppKit menu through the synchronous Objective-C callback.
@@ -59,16 +46,15 @@ private struct SynchronousMenuResult: @unchecked Sendable {
 
 /// Owns all mutable action state and AppKit interactions on the main actor.
 @MainActor
-private final class FinderMenuController: NSObject {
+private final class FinderMenuController {
     private let volumeMonitor: VolumeMonitor
     private let accessStore = DirectoryAccessStore()
-    private var isPerformingDirectoryAction = false
-    private var commands: [Int: MenuAction] = [:]
+    private var isCreatingFile = false
+    private var commands: [Int: FinderAction] = [:]
     private var nextCommandTag = 1
 
     init(volumeMonitor: VolumeMonitor) {
         self.volumeMonitor = volumeMonitor
-        super.init()
     }
 
     /// Starts Finder subscriptions after the principal extension's superclass has initialized.
@@ -86,11 +72,15 @@ private final class FinderMenuController: NSObject {
 
         let menu = NSMenu()
         menu.autoenablesItems = false
-        menu.addItem(item("Copy Path", symbol: "doc.on.clipboard", action: .copy, context: context))
-        if context.directoryURL != nil {
-            let terminal = item("Open in Terminal", symbol: "terminal", action: .terminal, context: context)
-            terminal.isEnabled = !isPerformingDirectoryAction
-            menu.addItem(terminal)
+        menu.addItem(item(
+            NSLocalizedString("Copy Path", comment: "Finder action"),
+            symbol: "doc.on.clipboard", action: .copy(context.copyURLs)
+        ))
+        if let directory = context.directoryURL {
+            menu.addItem(item(
+                NSLocalizedString("Open in Terminal", comment: "Finder action"),
+                symbol: "terminal", action: .terminal(directory)
+            ))
             let newFile = NSMenuItem(
                 title: NSLocalizedString("New File", comment: "New file submenu"), action: nil, keyEquivalent: ""
             )
@@ -100,9 +90,9 @@ private final class FinderMenuController: NSObject {
             submenu.autoenablesItems = false
             let bundle = Bundle(for: MacRightFinderSync.self)
             for kind in FileKind.allCases {
-                let entry = item(kind.title, symbol: nil, action: .create(kind), context: context, localized: true)
+                let entry = item(kind.title, symbol: nil, action: .create(kind, directory))
                 entry.image = kind.menuIcon(in: bundle)
-                entry.isEnabled = !isPerformingDirectoryAction
+                entry.isEnabled = !isCreatingFile || accessStore.isAwaitingAuthorization
                 submenu.addItem(entry)
             }
             newFile.submenu = submenu
@@ -112,15 +102,15 @@ private final class FinderMenuController: NSObject {
     }
 
     private func item(
-        _ title: String, symbol: String?, action: FinderAction, context: FinderContext, localized: Bool = false
+        _ title: String, symbol: String?, action: FinderAction
     ) -> NSMenuItem {
         let item = NSMenuItem(
-            title: localized ? title : NSLocalizedString(title, comment: "Finder action"),
+            title: title,
             action: #selector(MacRightFinderSync.performAction(_:)), keyEquivalent: ""
         )
         // Finder transports the numeric tag; custom representedObject values aren't its action contract.
         item.tag = nextCommandTag
-        commands[nextCommandTag] = MenuAction(action: action, context: context)
+        commands[nextCommandTag] = action
         nextCommandTag += 1
         // Retain recent menu snapshots, including menus requested by other Finder windows.
         commands.removeValue(forKey: nextCommandTag - 257)
@@ -140,27 +130,23 @@ private final class FinderMenuController: NSObject {
             ))
             return
         }
-        switch command.action {
-        case .copy:
-            do { try SystemActions.copyPaths(command.context.copyURLs) }
+        switch command {
+        case .copy(let urls):
+            do { try SystemActions.copyPaths(urls) }
             catch { SystemActions.present(error: error) }
-        case .terminal:
-            guard !isPerformingDirectoryAction, let directory = command.context.directoryURL else { return }
-            isPerformingDirectoryAction = true
+        case .terminal(let directory):
             Task {
-                defer { isPerformingDirectoryAction = false }
-                do {
-                    try await accessStore.withAccess(to: directory, requiresWrite: false) {
-                        try await SystemActions.openTerminal(at: directory)
-                    }
-                }
+                do { try await SystemActions.openTerminal(at: directory) }
                 catch { SystemActions.present(error: error) }
             }
-        case .create(let kind):
-            guard !isPerformingDirectoryAction, let directory = command.context.directoryURL else { return }
-            isPerformingDirectoryAction = true
+        case .create(let kind, let directory):
+            if isCreatingFile {
+                accessStore.presentPendingAuthorization()
+                return
+            }
+            isCreatingFile = true
             Task {
-                defer { isPerformingDirectoryAction = false }
+                defer { isCreatingFile = false }
                 do {
                     guard let resources = Bundle(for: MacRightFinderSync.self).resourceURL else {
                         throw CocoaError(.fileNoSuchFile)
@@ -179,19 +165,9 @@ private final class FinderMenuController: NSObject {
     }
 }
 
+/// Stores only the inputs required by each action, captured when Finder builds the menu.
 private enum FinderAction {
-    case copy
-    case terminal
-    case create(FileKind)
-}
-
-/// Retains the original menu context without retaining AppKit menu objects.
-private struct MenuAction {
-    let action: FinderAction
-    let context: FinderContext
-
-    init(action: FinderAction, context: FinderContext) {
-        self.action = action
-        self.context = context
-    }
+    case copy([URL])
+    case terminal(URL)
+    case create(FileKind, URL)
 }

@@ -13,7 +13,7 @@ struct MacRightApp: App {
         Window("MacRight", id: "main") {
             ExtensionStatusView()
         }
-        .defaultSize(width: 480, height: 430)
+        .defaultSize(width: 480, height: 300)
         .windowResizability(.contentSize)
     }
 }
@@ -30,120 +30,109 @@ private final class MacRightApplicationDelegate: NSObject, NSApplicationDelegate
 private struct ExtensionStatusView: View {
     @StateObject private var status = ExtensionStatusModel()
 
-    private var extensionEnabled: Bool { status.extensionEnabled }
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            HStack(spacing: 16) {
+        VStack(alignment: .leading, spacing: 24) {
+            HStack(spacing: 12) {
                 Image(nsImage: NSApplication.shared.applicationIconImage)
                     .resizable()
-                    .frame(width: 72, height: 72)
+                    .frame(width: 40, height: 40)
                     .accessibilityHidden(true)
-
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("MacRight")
-                        .font(.largeTitle.weight(.semibold))
-                    Text("Useful actions, right in Finder.")
-                        .foregroundStyle(.secondary)
-                }
+                Text("MacRight")
+                    .font(.title2.weight(.semibold))
             }
 
-            VStack(alignment: .leading, spacing: 10) {
-                Label {
-                    Text(LocalizedStringKey(extensionEnabled ? "Finder extension is enabled" : "Finder extension is not enabled"))
-                        .font(.headline)
-                } icon: {
-                    Image(systemName: extensionEnabled ? "checkmark.circle.fill" : "info.circle.fill")
-                        .foregroundStyle(extensionEnabled ? Color.green : Color.orange)
+            VStack(alignment: .leading, spacing: 16) {
+                settingsGroup("Finder Extension") {
+                    HStack(spacing: 12) {
+                        Label(LocalizedStringKey(status.extensionEnabled ? "Enabled" : "Setup Required"),
+                              systemImage: status.extensionEnabled ? "checkmark.circle.fill" : "exclamationmark.circle")
+                            .foregroundStyle(status.extensionEnabled ? Color.primary : Color.orange)
+                        Spacer()
+                        if status.extensionEnabled {
+                            extensionSettingsButton.buttonStyle(.bordered)
+                        } else {
+                            extensionSettingsButton.buttonStyle(.borderedProminent)
+                        }
+                    }
+                    Text(LocalizedStringKey(status.extensionEnabled
+                         ? "Right-click in Finder or on your desktop to use MacRight."
+                         : "Open extension settings and enable MacRight, then return here to check its status."))
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
-                Text(LocalizedStringKey(extensionEnabled
-                     ? "Right-click in Finder or on your desktop to use MacRight."
-                     : "Open extension settings and enable MacRight, then return here to check its status."))
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                HStack(spacing: 10) {
-                    Button("Open Extension Settings") {
-                        FIFinderSyncController.showExtensionManagementInterface()
-                    }
-                    .buttonStyle(.borderedProminent)
-
-                    Button("Refresh Status", action: status.refresh)
+                settingsGroup("Terminal Application") {
+                    HStack(spacing: 10) {
+                        if let icon = status.selectedTerminalIcon {
+                            Image(nsImage: icon)
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .accessibilityHidden(true)
+                        } else {
+                            Image(systemName: "terminal")
+                                .frame(width: 24, height: 24)
+                                .accessibilityHidden(true)
+                        }
+                        if let selected = status.selectedTerminal {
+                            Text(selected.title)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                                .help(selected.applicationPath ?? selected.title)
+                        } else {
+                            Text("No Terminal Application Selected")
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer(minLength: 12)
+                        Button("Choose…") {
+                            Task { await status.chooseTerminalApplication() }
+                        }
                         .buttonStyle(.bordered)
+                        .disabled(status.isChoosingTerminal)
+                        .accessibilityLabel("Choose Terminal Application…")
+                        .accessibilityIdentifier("choose-terminal-application")
+                    }
+                    if let error = status.terminalPreferenceError {
+                        Label(error, systemImage: "exclamationmark.circle")
+                            .font(.callout)
+                            .foregroundStyle(.red)
+                            .fixedSize(horizontal: false, vertical: true)
+                    } else if status.selectedTerminal != nil, status.selectedTerminalIcon == nil {
+                        Label("The selected terminal application could not be found. Choose it again.",
+                              systemImage: "exclamationmark.circle")
+                            .font(.callout)
+                            .foregroundStyle(.orange)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
             }
-            .padding(16)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 12))
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Terminal Application")
-                    .font(.headline)
-
-                HStack(spacing: 10) {
-                    if let icon = status.selectedTerminalIcon {
-                        Image(nsImage: icon)
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                            .accessibilityHidden(true)
-                    } else {
-                        Image(systemName: "terminal")
-                            .font(.title2)
-                            .accessibilityHidden(true)
-                    }
-                    if let selected = status.selectedTerminal {
-                        Text(selected.title)
-                            .lineLimit(1)
-                            .truncationMode(.middle)
-                            .help(selected.applicationPath ?? selected.title)
-                    } else {
-                        Text("No Terminal Application Selected")
-                            .foregroundStyle(.secondary)
-                    }
-
-                    Spacer()
-
-                    Button("Choose Terminal Application…") {
-                        Task { await status.chooseTerminalApplication() }
-                    }
-                    .disabled(status.isChoosingTerminal)
-                    .accessibilityIdentifier("choose-terminal-application")
-                }
-
-                if let error = status.terminalPreferenceError {
-                    Text(error)
-                        .foregroundStyle(.red)
-                        .fixedSize(horizontal: false, vertical: true)
-                } else if status.selectedTerminal != nil, status.selectedTerminalIcon == nil {
-                    Text("The selected terminal application could not be found. Choose it again.")
-                        .foregroundStyle(.orange)
-                        .fixedSize(horizontal: false, vertical: true)
-                } else {
-                    Text("Changes are saved automatically and apply immediately in Finder.")
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-            .font(.callout)
-
-            VStack(alignment: .leading, spacing: 9) {
-                Label("Create Text, Markdown, Word, Excel, and PowerPoint files", systemImage: "doc.badge.plus")
-                Label("Copy full paths, including multiple selected items", systemImage: "doc.on.clipboard")
-                Label("Open Terminal in the selected folder", systemImage: "terminal")
-            }
-            .font(.callout)
-
-            Text("Once enabled, Finder actions remain available when this window is closed.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(28)
+        .padding(24)
         .frame(width: 480)
+        .background(Color(nsColor: .windowBackgroundColor))
         .onAppear(perform: status.refresh)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
             status.refresh()
+        }
+    }
+
+    private var extensionSettingsButton: some View {
+        Button("Extension Settings…") {
+            FIFinderSyncController.showExtensionManagementInterface()
+        }
+    }
+
+    /// Groups each setting with its action and feedback on an opaque, appearance-aware surface.
+    private func settingsGroup<Content: View>(
+        _ title: LocalizedStringKey, @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title).font(.headline)
+            VStack(alignment: .leading, spacing: 10, content: content)
+                .padding(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 8))
+                .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(Color(nsColor: .separatorColor), lineWidth: 0.5))
         }
     }
 }
@@ -204,15 +193,8 @@ private final class ExtensionStatusModel: ObservableObject {
     /// Shows the saved app and its actual icon without replacing a missing app with another terminal.
     private func displaySelection(_ application: TerminalApplication) {
         selectedTerminal = application
-        var installedURL: URL?
-        if let path = application.applicationPath {
-            let applicationURL = URL(fileURLWithPath: path, isDirectory: true)
-            if (try? TerminalApplication(applicationURL: applicationURL)) != nil {
-                installedURL = applicationURL
-            }
-        } else {
-            installedURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: application.bundleIdentifier)
+        selectedTerminalIcon = (try? application.installedURL()).map {
+            NSWorkspace.shared.icon(forFile: $0.path)
         }
-        selectedTerminalIcon = installedURL.map { NSWorkspace.shared.icon(forFile: $0.path) }
     }
 }

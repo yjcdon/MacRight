@@ -3,7 +3,11 @@ MacRight
 MacRight references the design and behavior of MacNewFile:
 https://github.com/GarfieldFluffJr/MacNewFile
 
-The AppIcon asset catalog is copied unchanged from MacNewFile.
+The application icon adapts Lucide square-mouse-pointer with black strokes on a white rounded background.
+Source: https://lucide.dev/icons/square-mouse-pointer
+Copyright (c) 2026 Lucide Icons and Contributors.
+The full ISC license is included in Resources/Licenses/Lucide-LICENSE
+and in the installed app as Lucide-LICENSE.
 The five New File menu icons in Resources/MenuIcons are also copied unchanged
 from MacNewFileFinderExtension/Assets.xcassets: edit, document, word, excel,
 and powerpoint image sets. Only their resource file names have changed.

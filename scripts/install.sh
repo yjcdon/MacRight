@@ -24,7 +24,8 @@ stop_installed_processes() {
     processes="$(/bin/ps -axo pid=,comm=)" || return 1
     while read -r pid command; do
         if [[ "$command" == "$DESTINATION/Contents/MacOS/MacRight" ||
-              "$command" == "$DESTINATION/Contents/PlugIns/MacRightFinderExtension.appex/Contents/MacOS/MacRightFinderExtension" ]]; then
+              "$command" == "$DESTINATION/Contents/PlugIns/MacRightFinderExtension.appex/Contents/MacOS/MacRightFinderExtension" ||
+              "$command" == "$DESTINATION/Contents/Helpers/MacRightTerminalLauncher.app/Contents/MacOS/MacRightTerminalLauncher" ]]; then
             if kill -TERM "$pid" 2>/dev/null; then
                 pids+=("$pid")
             elif kill -0 "$pid" 2>/dev/null; then

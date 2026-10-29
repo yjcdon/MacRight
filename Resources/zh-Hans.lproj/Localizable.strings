@@ -1,22 +1,15 @@
 /* MacRight app */
-"Useful actions, right in Finder." = "常用操作，右键完成。";
 "Finder extension is enabled" = "Finder 扩展已启用";
 "Finder extension is not enabled" = "Finder 扩展尚未启用";
 "Right-click in Finder or on your desktop to use MacRight." = "在 Finder 或桌面上右键，即可使用 MacRight。";
 "Open extension settings and enable MacRight, then return here to check its status." = "打开扩展设置并启用 MacRight，然后返回这里查看状态。";
 "Open Extension Settings" = "打开扩展设置";
-"Refresh Status" = "刷新状态";
-"Create Text, Markdown, Word, Excel, and PowerPoint files" = "新建文本、Markdown、Word、Excel 和 PowerPoint 文件";
-"Copy full paths, including multiple selected items" = "复制完整路径，支持多选";
-"Open Terminal in the selected folder" = "在目标文件夹打开所选终端";
-"Once enabled, Finder actions remain available when this window is closed." = "扩展启用后，关闭此窗口仍可使用右键功能。";
 "Terminal Application" = "终端应用";
 "No Terminal Application Selected" = "尚未选择终端应用";
 "Choose Terminal Application…" = "选择终端应用…";
 "Choose" = "选择";
 "Choose the terminal application to open folders from Finder." = "请选择用于从 Finder 打开文件夹的终端应用。";
 "The selected terminal application could not be found. Choose it again." = "未找到所选终端应用，请重新选择。";
-"Changes are saved automatically and apply immediately in Finder." = "更改会自动保存，并立即在 Finder 中生效。";
 "System Terminal" = "系统终端";
 "The preferred terminal setting is invalid. Choose a terminal in MacRight." = "首选终端设置无效，请在 MacRight 中重新选择终端。";
 "The terminal preference could not be synchronized. Try again." = "无法同步终端设置，请重试。";
@@ -44,7 +37,7 @@
 "Allow MacRight to Access This Folder" = "允许 MacRight 访问此文件夹";
 "Allow Access" = "允许访问";
 "Folder access has expired. Select this folder or a parent folder to renew access." = "文件夹授权已失效，请选择此文件夹或其上级文件夹重新授权。";
-"Select this folder or a parent folder to allow MacRight to create files or open Terminal there." = "请选择此文件夹或其上级文件夹，允许 MacRight 在其中新建文件或打开终端。";
+"Select this folder or a parent folder to allow MacRight to create files there." = "请选择此文件夹或其上级文件夹，允许 MacRight 在其中新建文件。";
 "There are no file paths to copy." = "没有可复制的文件路径。";
 "The clipboard could not be updated. Try copying the paths again." = "无法更新剪贴板，请重新复制路径。";
 "The target folder no longer exists." = "目标文件夹已不存在。";
@@ -58,3 +51,10 @@
 "Folder access could not be saved. Check free disk space and try again." = "无法保存文件夹授权，请检查磁盘可用空间后重试。";
 "This disk is read-only. Choose a writable folder to create a file." = "此磁盘为只读，请选择可写的文件夹新建文件。";
 "This menu has expired. Please reopen it." = "此菜单已失效，请重新打开右键菜单。";
+
+/* Settings window */
+"Finder Extension" = "Finder 扩展";
+"Enabled" = "已启用";
+"Setup Required" = "待启用";
+"Extension Settings…" = "扩展设置…";
+"Choose…" = "选择…";

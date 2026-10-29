@@ -10,7 +10,7 @@ MacRight 是使用 Swift 编写的轻量 macOS Finder 右键工具。在当前�
 - 新建时自动避开同名文件，并在 Finder 中选中新文件。
 - 复制文件或文件夹的完整路径；多选时每行一个路径。
 - “在此打开终端”：通过系统应用选择窗口自由选择终端应用，配置自动保存并即时生效。
-- 首次访问目录时请求授权，保存书签供后续操作使用。
+- 首次新建文件时请求目录授权，保存书签供后续新建操作使用。
 - 简体中文、英文界面；关闭设置窗口后，右键扩展继续工作。
 
 新建文件固定为以下五种：
@@ -27,7 +27,7 @@ MacRight 是使用 Swift 编写的轻量 macOS Finder 右键工具。在当前�
 
 ## 下载与安装
 
-当前版本：**v0.1.0**。发布包为 **Apple Silicon（arm64）**，最低部署版本为 **macOS 13 Ventura**；实际运行验证环境为 macOS 27.0.1 / Apple Silicon。尚未在 macOS 13 实机、Intel Mac、云盘及网络卷完成验证。
+当前版本：**v0.1.1**。发布包为 **Apple Silicon（arm64）**，最低部署版本为 **macOS 13 Ventura**；实际运行验证环境为 macOS 27.2 / Apple Silicon。尚未在 macOS 13 实机、Intel Mac、云盘及网络卷完成验证。
 
 ### Homebrew
 
@@ -56,25 +56,27 @@ brew uninstall --cask yjcdon/macright/macright
 
 ### 手动下载
 
-1. 在 [Releases](https://github.com/yjcdon/MacRight/releases/latest) 下载 `MacRight-0.1.0-macos-arm64.zip`，解压后将 `MacRight.app` 拖入“应用程序”。
-2. 打开 MacRight，点击“打开扩展设置”，在系统设置中启用 MacRight Finder 扩展。不同 macOS 版本的设置位置可能不同。
+1. 在 [Releases](https://github.com/yjcdon/MacRight/releases/latest) 下载 `MacRight-0.1.1-macos-arm64.zip`，解压后将 `MacRight.app` 拖入“应用程序”。
+2. 打开 MacRight，点击“扩展设置…”，在系统设置中启用 MacRight Finder 扩展。不同 macOS 版本的设置位置可能不同。
 3. 回到 Finder，在文件夹空白处或项目上右键使用。
 
-当前发布包使用 ad-hoc 签名，未经 Developer ID 签名或 Apple 公证。如果 macOS 阻止启动，请先确认下载来源，并参考 Apple 的[安全打开 App 说明](https://support.apple.com/zh-cn/102445)，在“系统设置 → 隐私与安全性”中处理提示。
+当前发布包使用 Apple Development 证书签名，未经 Developer ID 签名或 Apple 公证。如果 macOS 阻止启动，请先确认下载来源，并参考 Apple 的[安全打开 App 说明](https://support.apple.com/zh-cn/102445)，在“系统设置 → 隐私与安全性”中处理提示。
+
+从旧版临时签名升级后，macOS 可能再次请求桌面等受保护目录的访问权限；请按实际使用选择允许。
 
 Release 同时提供 `.sha256` 文件，可在下载目录校验：
 
 ```sh
-shasum -a 256 -c MacRight-0.1.0-macos-arm64.zip.sha256
+shasum -a 256 -c MacRight-0.1.1-macos-arm64.zip.sha256
 ```
 
 ## 使用方式
 
-首次新建文件或打开终端时，通过系统窗口授权目标目录或其上级目录。Office 文件直接复制内置模板，原模板不会被修改。
+点击“在此打开终端”会直接将 Finder 本次目标目录交给所选终端；随应用打包的后台启动器负责执行，完成后退出。首次新建文件时，通过系统窗口授权目标目录或其上级目录。Office 文件直接复制内置模板，原模板不会被修改。
 
 多选时可一次复制所有完整路径，每行一个。新建文件自动避开重名并选中新文件。关闭最后一个指引窗口即退出主应用，右键扩展独立运行，不会自动添加登录项。
 
-在主应用点击“选择终端应用…”即可选择已安装的 `.app`，默认使用系统 Terminal。所选应用需要支持 macOS 的目录打开请求；已验证系统 Terminal 和 Ghostty。取消选择会保留原配置，移动或卸载所选应用后需重新选择。
+在主应用在终端应用分组点击“选择…”即可选择已安装的 `.app`，默认使用系统 Terminal。所选应用需要支持 macOS 的目录打开请求；已验证系统 Terminal 和 Ghostty。取消选择会保留原配置，移动或卸载所选应用后需重新选择。
 
 出现重复右键菜单时，请在系统设置中停用重复的 Finder 扩展。MacRight 仅提供右键入口，不添加 Finder 工具栏按钮。
 
@@ -88,7 +90,7 @@ bash scripts/build.sh
 bash scripts/install.sh
 ```
 
-构建产物位于 `build/arm64/MacRight.app`，安装脚本安装到 `/Applications/MacRight.app`，替换的旧版本保存在废纸篓。应用及扩展默认使用 ad-hoc 签名；指定身份时可使用 `MACRIGHT_SIGN_IDENTITY` 命令级环境变量。当前完成运行验证的架构是 Apple Silicon，部署目标为 macOS 13，实际验证系统及剩余事项见验证记录。
+构建产物位于 `build/arm64/MacRight.app`，安装脚本安装到 `/Applications/MacRight.app`，替换的旧版本保存在废纸篓。本地构建默认使用钥匙串中唯一的 Apple Development 证书，让更新前后的隐私权限具有稳定应用身份。存在多个证书或使用其他签名身份时，通过 `MACRIGHT_SIGN_IDENTITY` 指定；临时构建可显式设置为 `-` 使用 ad-hoc 签名，其权限可能在更新后需要重新允许。当前完成运行验证的架构是 Apple Silicon，部署目标为 macOS 13，实际验证系统及剩余事项见验证记录。
 
 发布包生成命令：
 
