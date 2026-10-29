@@ -30,14 +30,6 @@
 
 /* Directory access and operation feedback */
 "OK" = "好";
-"Choose a local folder for this operation." = "请选择本地文件夹执行此操作。";
-"Choose the target folder or a parent folder that contains it." = "请选择目标文件夹，或包含它的上级文件夹。";
-"macOS did not grant access to this folder. Check its permissions and try again." = "macOS 未授予此文件夹的访问权限，请检查权限后重试。";
-"Finish the open folder authorization dialog before trying again." = "请先完成已打开的文件夹授权，再重试。";
-"Allow MacRight to Access This Folder" = "允许 MacRight 访问此文件夹";
-"Allow Access" = "允许访问";
-"Folder access has expired. Select this folder or a parent folder to renew access." = "文件夹授权已失效，请选择此文件夹或其上级文件夹重新授权。";
-"Select this folder or a parent folder to allow MacRight to create files there." = "请选择此文件夹或其上级文件夹，允许 MacRight 在其中新建文件。";
 "There are no file paths to copy." = "没有可复制的文件路径。";
 "The clipboard could not be updated. Try copying the paths again." = "无法更新剪贴板，请重新复制路径。";
 "The target folder no longer exists." = "目标文件夹已不存在。";
@@ -48,8 +40,6 @@
 "Too many files already use this name. Rename an existing file and try again." = "使用此名称的文件过多，请重命名已有文件后重试。";
 "The file could not be completed: %@" = "无法完成文件创建：%@";
 "A file may remain at %@. Check this location before trying again." = "文件可能仍保留在 %@，请检查此位置后再重试。";
-"Folder access could not be saved. Check free disk space and try again." = "无法保存文件夹授权，请检查磁盘可用空间后重试。";
-"This disk is read-only. Choose a writable folder to create a file." = "此磁盘为只读，请选择可写的文件夹新建文件。";
 "This menu has expired. Please reopen it." = "此菜单已失效，请重新打开右键菜单。";
 
 /* Settings window */

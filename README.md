@@ -10,7 +10,7 @@ MacRight 是使用 Swift 编写的轻量 macOS Finder 右键工具。在当前�
 - 新建时自动避开同名文件，并在 Finder 中选中新文件。
 - 复制文件或文件夹的完整路径；多选时每行一个路径。
 - “在此打开终端”：通过系统应用选择窗口自由选择终端应用，配置自动保存并即时生效。
-- 首次新建文件时请求目录授权，保存书签供后续新建操作使用。
+- 新建文件和打开终端共用应用访问身份；桌面、文稿等受保护目录由 macOS 统一询问访问权限。
 - 简体中文、英文界面；关闭设置窗口后，右键扩展继续工作。
 
 新建文件固定为以下五种：
@@ -27,7 +27,7 @@ MacRight 是使用 Swift 编写的轻量 macOS Finder 右键工具。在当前�
 
 ## 下载与安装
 
-当前版本：**v0.1.1**。发布包为 **Apple Silicon（arm64）**，最低部署版本为 **macOS 13 Ventura**；实际运行验证环境为 macOS 27.2 / Apple Silicon。尚未在 macOS 13 实机、Intel Mac、云盘及网络卷完成验证。
+当前版本：**v0.1.2**。发布包为 **Apple Silicon（arm64）**，最低部署版本为 **macOS 13 Ventura**；实际运行验证环境为 macOS 27.2 / Apple Silicon。尚未在 macOS 13 实机、Intel Mac、云盘及网络卷完成验证。
 
 ### Homebrew
 
@@ -56,7 +56,7 @@ brew uninstall --cask yjcdon/macright/macright
 
 ### 手动下载
 
-1. 在 [Releases](https://github.com/yjcdon/MacRight/releases/latest) 下载 `MacRight-0.1.1-macos-arm64.zip`，解压后将 `MacRight.app` 拖入“应用程序”。
+1. 在 [Releases](https://github.com/yjcdon/MacRight/releases/latest) 下载 `MacRight-0.1.2-macos-arm64.zip`，解压后将 `MacRight.app` 拖入“应用程序”。
 2. 打开 MacRight，点击“扩展设置…”，在系统设置中启用 MacRight Finder 扩展。不同 macOS 版本的设置位置可能不同。
 3. 回到 Finder，在文件夹空白处或项目上右键使用。
 
@@ -67,12 +67,12 @@ brew uninstall --cask yjcdon/macright/macright
 Release 同时提供 `.sha256` 文件，可在下载目录校验：
 
 ```sh
-shasum -a 256 -c MacRight-0.1.1-macos-arm64.zip.sha256
+shasum -a 256 -c MacRight-0.1.2-macos-arm64.zip.sha256
 ```
 
 ## 使用方式
 
-点击“在此打开终端”会直接将 Finder 本次目标目录交给所选终端；随应用打包的后台启动器负责执行，完成后退出。首次新建文件时，通过系统窗口授权目标目录或其上级目录。Office 文件直接复制内置模板，原模板不会被修改。
+点击“在此打开终端”会直接将 Finder 本次目标目录交给所选终端；随应用打包的后台启动器负责执行，完成后退出。新建文件与打开终端由同一后台组件执行，复用 macOS 对该组件的目录访问决定。新建文件直接使用 Finder 目标目录。Office 文件直接复制内置模板，原模板不会被修改。
 
 多选时可一次复制所有完整路径，每行一个。新建文件自动避开重名并选中新文件。关闭最后一个指引窗口即退出主应用，右键扩展独立运行，不会自动添加登录项。
 
@@ -112,7 +112,7 @@ Homebrew 安装定义维护在 [Casks/macright.rb](Casks/macright.rb)。每次�
 - [验证记录](docs/04-验证记录.md)
 - [资源来源与校验](Resources/README.md)
 
-已验证五种文件真实右键创建、Office 模板字节一致及 WPS 打开、Ghostty 目录启动、重名避让、主程序退出及 Finder 重启后的授权复用；多选复制路径经用户实测通过。授权取消、错误目录、菜单切换和卷变化的完整界面回归仍待补齐，详见验证记录。
+已验证五种文件真实右键创建、Office 模板字节一致及 WPS 打开、Ghostty 目录启动、重名避让、主程序退出及 Finder 重启后的授权复用；多选复制路径经用户实测通过。受保护目录访问拒绝、菜单切换和卷变化的完整界面回归仍待补齐，详见验证记录。
 
 本机短时采样中，右键扩展约占 8.8 MiB 物理内存、空闲 CPU 为 0%；这不是跨设备性能保证或长期内存泄漏测试。
 

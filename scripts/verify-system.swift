@@ -41,9 +41,7 @@ struct SystemVerification {
             try SystemActions.copyPaths([URL(string: "https://example.com")!])
             throw VerificationFailure(message: "Non-file URL was accepted")
         } catch SystemActionError.noPaths {}
-        try expect(DirectoryAccessStore.isCancellation(DirectoryAccessError.cancelled), "Cancellation is distinguishable")
-        try expect(!DirectoryAccessStore.isCancellation(CocoaError(.fileWriteNoPermission)), "Permission failure is not cancellation")
-        print("PASS: production clipboard single/multiple paths, exact characters, invalid inputs, cancellation classification")
+        print("PASS: production clipboard single/multiple paths, exact characters, invalid inputs")
         print("PASS: original clipboard representations restored on exit")
     }
 

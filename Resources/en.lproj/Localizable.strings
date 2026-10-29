@@ -30,14 +30,6 @@
 
 /* Directory access and operation feedback */
 "OK" = "OK";
-"Choose a local folder for this operation." = "Choose a local folder for this operation.";
-"Choose the target folder or a parent folder that contains it." = "Choose the target folder or a parent folder that contains it.";
-"macOS did not grant access to this folder. Check its permissions and try again." = "macOS did not grant access to this folder. Check its permissions and try again.";
-"Finish the open folder authorization dialog before trying again." = "Finish the open folder authorization dialog before trying again.";
-"Allow MacRight to Access This Folder" = "Allow MacRight to Access This Folder";
-"Allow Access" = "Allow Access";
-"Folder access has expired. Select this folder or a parent folder to renew access." = "Folder access has expired. Select this folder or a parent folder to renew access.";
-"Select this folder or a parent folder to allow MacRight to create files there." = "Select this folder or a parent folder to allow MacRight to create files there.";
 "There are no file paths to copy." = "There are no file paths to copy.";
 "The clipboard could not be updated. Try copying the paths again." = "The clipboard could not be updated. Try copying the paths again.";
 "The target folder no longer exists." = "The target folder no longer exists.";
@@ -48,8 +40,6 @@
 "Too many files already use this name. Rename an existing file and try again." = "Too many files already use this name. Rename an existing file and try again.";
 "The file could not be completed: %@" = "The file could not be completed: %@";
 "A file may remain at %@. Check this location before trying again." = "A file may remain at %@. Check this location before trying again.";
-"Folder access could not be saved. Check free disk space and try again." = "Folder access could not be saved. Check free disk space and try again.";
-"This disk is read-only. Choose a writable folder to create a file." = "This disk is read-only. Choose a writable folder to create a file.";
 "This menu has expired. Please reopen it." = "This menu has expired. Please reopen it.";
 
 /* Settings window */

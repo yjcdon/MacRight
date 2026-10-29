@@ -37,8 +37,8 @@ esac
 
 # Build all executables from repository sources; no Xcode-generated assets are required.
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" \
-    "$EXT/Contents/MacOS" "$EXT/Contents/Resources/Templates" "$EXT/Contents/Resources/MenuIcons" \
-    "$LAUNCHER/Contents/MacOS" "$LAUNCHER/Contents/Resources" "$ICONSET"
+    "$EXT/Contents/MacOS" "$EXT/Contents/Resources/MenuIcons" \
+    "$LAUNCHER/Contents/MacOS" "$LAUNCHER/Contents/Resources/Templates" "$ICONSET"
 cp "$ROOT/MacRightApp/Info.plist" "$APP/Contents/Info.plist"
 cp "$ROOT/FinderExtension/Info.plist" "$EXT/Contents/Info.plist"
 cp "$ROOT/TerminalLauncher/Info.plist" "$LAUNCHER/Contents/Info.plist"
@@ -57,10 +57,10 @@ xcrun swiftc "${SWIFT_FLAGS[@]}" -module-name MacRightFinderExtension \
     -framework AppKit -framework FinderSync \
     -o "$EXT/Contents/MacOS/MacRightFinderExtension"
 xcrun swiftc "${SWIFT_FLAGS[@]}" -module-name MacRightTerminalLauncher \
-    "$ROOT"/Shared/Terminal*.swift "$ROOT"/TerminalLauncher/*.swift -framework AppKit \
+    "$ROOT"/Shared/*.swift "$ROOT"/TerminalLauncher/*.swift -framework AppKit \
     -o "$LAUNCHER/Contents/MacOS/MacRightTerminalLauncher"
 
-cp "$ROOT"/Resources/Templates/Office/* "$EXT/Contents/Resources/Templates/"
+cp "$ROOT"/Resources/Templates/Office/* "$LAUNCHER/Contents/Resources/Templates/"
 cp "$ROOT"/Resources/MenuIcons/*.png "$EXT/Contents/Resources/MenuIcons/"
 for bundle in "$APP" "$EXT" "$LAUNCHER"; do
     for language in en zh-Hans; do

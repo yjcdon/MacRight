@@ -48,8 +48,6 @@ private struct SynchronousMenuResult: @unchecked Sendable {
 @MainActor
 private final class FinderMenuController {
     private let volumeMonitor: VolumeMonitor
-    private let accessStore = DirectoryAccessStore()
-    private var isCreatingFile = false
     private var commands: [Int: FinderAction] = [:]
     private var nextCommandTag = 1
 
@@ -92,7 +90,6 @@ private final class FinderMenuController {
             for kind in FileKind.allCases {
                 let entry = item(kind.title, symbol: nil, action: .create(kind, directory))
                 entry.image = kind.menuIcon(in: bundle)
-                entry.isEnabled = !isCreatingFile || accessStore.isAwaitingAuthorization
                 submenu.addItem(entry)
             }
             newFile.submenu = submenu
@@ -135,32 +132,17 @@ private final class FinderMenuController {
             do { try SystemActions.copyPaths(urls) }
             catch { SystemActions.present(error: error) }
         case .terminal(let directory):
-            Task {
-                do { try await SystemActions.openTerminal(at: directory) }
-                catch { SystemActions.present(error: error) }
-            }
+            perform(.terminal, at: directory)
         case .create(let kind, let directory):
-            if isCreatingFile {
-                accessStore.presentPendingAuthorization()
-                return
-            }
-            isCreatingFile = true
-            Task {
-                defer { isCreatingFile = false }
-                do {
-                    guard let resources = Bundle(for: MacRightFinderSync.self).resourceURL else {
-                        throw CocoaError(.fileNoSuchFile)
-                    }
-                    let service = FileCreationService(templateDirectory: resources.appendingPathComponent("Templates"))
-                    let baseName = NSLocalizedString("Untitled", comment: "Default new document name")
-                    let output = try await accessStore.withAccess(to: directory) {
-                        try service.create(kind: kind, in: directory, baseName: baseName)
-                    }
-                    SystemActions.reveal(output)
-                } catch {
-                    SystemActions.present(error: error)
-                }
-            }
+            perform(.create(kind), at: directory)
+        }
+    }
+
+    /// Sends the captured target to the helper while Finder remains responsive.
+    private func perform(_ action: DirectoryActionRequest.Action, at directory: URL) {
+        Task {
+            do { try await SystemActions.perform(action, at: directory) }
+            catch { SystemActions.present(error: error) }
         }
     }
 }

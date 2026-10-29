@@ -23,6 +23,31 @@ struct CoreVerification {
             return
         }
 
+        let target = URL(fileURLWithPath: "/tmp/中文 space ' \" $ & + # %", isDirectory: true)
+        for action in [DirectoryActionRequest.Action.terminal] + FileKind.allCases.map({ .create($0) }) {
+            let request = try DirectoryActionRequest(action: action, directory: target)
+            let decoded = try DirectoryActionRequest(url: request.url)
+            try expect(decoded.directory.path == target.path, "Helper preserves exact directory")
+            switch (action, decoded.action) {
+            case (.terminal, .terminal): break
+            case (.create(let expected), .create(let actual)):
+                try expect(expected == actual, "Helper preserves file kind")
+            default: throw Failure("Helper action changed")
+            }
+        }
+        for invalid in [
+            "macright-terminal://create?directory=/tmp&kind=unknown",
+            "macright-terminal://create?directory=/tmp",
+            "macright-terminal://open?directory=/tmp&kind=text",
+            "macright-terminal://open?directory=/tmp&directory=/etc",
+            "macright-terminal://open?directory=relative",
+            "macright-terminal://open?directory=/tmp%00",
+            "macright-terminal://delete?directory=/tmp"
+        ] {
+            try expectThrows("Malformed helper request") { _ = try DirectoryActionRequest(url: URL(string: invalid)!) }
+        }
+        print("PASS: directory action round trips and malformed requests")
+
         let fixture = root.appendingPathComponent("build/core-verification/\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: fixture, withIntermediateDirectories: true)
         let nested = fixture.appendingPathComponent("中文 space ' \" $ & folder", isDirectory: true)

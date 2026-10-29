@@ -26,14 +26,8 @@ enum SystemActionError: LocalizedError {
 enum SystemActions {
     private static let logger = Logger(subsystem: "com.yjcdon.MacRight", category: "Actions")
 
-    /// Selects the already-created file; this action never repeats file creation.
-    static func reveal(_ url: URL) {
-        NSWorkspace.shared.activateFileViewerSelecting([url])
-    }
-
-    /// Displays actionable operation failures, while treating a cancelled folder grant as a quiet result.
+    /// Displays operation failures with the system error and recovery suggestion.
     static func present(error: Error) {
-        guard !DirectoryAccessStore.isCancellation(error) else { return }
         logger.error("An operation failed: \(error.localizedDescription, privacy: .private)")
         let alert = NSAlert()
         alert.alertStyle = .warning

@@ -5,13 +5,13 @@ mkdir -p "$ROOT/build/verification"
 
 xcrun swiftc -swift-version 6 -warnings-as-errors -O \
     "$ROOT/Shared/FileKind.swift" \
+    "$ROOT/Shared/DirectoryActionRequest.swift" \
     "$ROOT/FinderExtension/FinderContextResolver.swift" \
-    "$ROOT/FinderExtension/FileCreationService.swift" \
+    "$ROOT/TerminalLauncher/FileCreationService.swift" \
     "$ROOT/scripts/verify-core.swift" -o "$ROOT/build/verification/verify-core"
 "$ROOT/build/verification/verify-core" "$ROOT"
 
 xcrun swiftc -swift-version 6 -warnings-as-errors -O \
-    "$ROOT/FinderExtension/DirectoryAccessStore.swift" \
     "$ROOT/FinderExtension/SystemActions.swift" \
     "$ROOT/FinderExtension/ClipboardAction.swift" \
     "$ROOT/scripts/verify-system.swift" -o "$ROOT/build/verification/verify-system"
