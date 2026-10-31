@@ -52,7 +52,9 @@ final class VolumeMonitor {
             logger.error("Mounted volumes could not be enumerated; existing menu coverage is preserved.")
             return
         }
-        updated.formUnion(volumes)
+        // Finder uses the containing app's icon for monitored roots in its sidebar.
+        // Monitor mount containers so each volume retains its own icon and its contents get menus.
+        updated.formUnion(volumes.map { $0.deletingLastPathComponent().standardizedFileURL })
         guard updated != directoryURLs else { return }
         directoryURLs = updated
         FIFinderSyncController.default().directoryURLs = updated

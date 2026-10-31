@@ -1,6 +1,6 @@
 cask "macright" do
-  version "0.1.2"
-  sha256 "28ab11dd01ff2f54ba648bbaa2961735285302d370bc02573062ab56387e9b90"
+  version "0.1.3"
+  sha256 "2e3d9eabaf76c5a386b12380655b6a574c4fa8985a6435e7b7dbaf2d0145fef6"
 
   url "https://github.com/yjcdon/MacRight/releases/download/v#{version}/MacRight-#{version}-macos-arm64.zip"
   name "MacRight"

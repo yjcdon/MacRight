@@ -27,7 +27,7 @@ MacRight 是使用 Swift 编写的轻量 macOS Finder 右键工具。在当前�
 
 ## 下载与安装
 
-当前版本：**v0.1.2**。发布包为 **Apple Silicon（arm64）**，最低部署版本为 **macOS 13 Ventura**；实际运行验证环境为 macOS 27.2 / Apple Silicon。尚未在 macOS 13 实机、Intel Mac、云盘及网络卷完成验证。
+当前版本：**v0.1.3**。发布包为 **Apple Silicon（arm64）**，最低部署版本为 **macOS 13 Ventura**；实际运行验证环境为 macOS 27.2 / Apple Silicon。尚未在 macOS 13 实机、Intel Mac、云盘及网络卷完成验证。
 
 ### Homebrew
 
@@ -56,7 +56,7 @@ brew uninstall --cask yjcdon/macright/macright
 
 ### 手动下载
 
-1. 在 [Releases](https://github.com/yjcdon/MacRight/releases/latest) 下载 `MacRight-0.1.2-macos-arm64.zip`，解压后将 `MacRight.app` 拖入“应用程序”。
+1. 在 [Releases](https://github.com/yjcdon/MacRight/releases/latest) 下载 `MacRight-0.1.3-macos-arm64.zip`，解压后将 `MacRight.app` 拖入“应用程序”。
 2. 打开 MacRight，点击“扩展设置…”，在系统设置中启用 MacRight Finder 扩展。不同 macOS 版本的设置位置可能不同。
 3. 回到 Finder，在文件夹空白处或项目上右键使用。
 
@@ -67,7 +67,7 @@ brew uninstall --cask yjcdon/macright/macright
 Release 同时提供 `.sha256` 文件，可在下载目录校验：
 
 ```sh
-shasum -a 256 -c MacRight-0.1.2-macos-arm64.zip.sha256
+shasum -a 256 -c MacRight-0.1.3-macos-arm64.zip.sha256
 ```
 
 ## 使用方式

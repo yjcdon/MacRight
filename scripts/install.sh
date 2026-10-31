@@ -95,5 +95,11 @@ fi
 mv "$STAGING/MacRight.app" "$DESTINATION"
 INSTALLED_NEW=1
 pluginkit -a "$DESTINATION/Contents/PlugIns/MacRightFinderExtension.appex"
+# Refresh Finder's live extension connections after replacing an installed version.
+if [ "$UNREGISTERED_OLD" -eq 1 ] && pgrep -x Finder >/dev/null; then
+    echo "Reloading Finder to refresh MacRight menus."
+    killall Finder
+    osascript -e 'tell application "Finder" to activate'
+fi
 open "$DESTINATION"
 echo "Installed: $DESTINATION"
